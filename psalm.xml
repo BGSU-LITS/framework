@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<psalm
+    totallyTyped="true"
+    ensureArrayStringOffsetsExist="true"
+>
+    <plugins>
+        <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
+    </plugins>
+    <projectFiles>
+        <directory name="."/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+            <directory name="vendor-bin"/>
+        </ignoreFiles>
+    </projectFiles>
+</psalm>

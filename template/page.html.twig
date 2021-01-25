@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>
+{{ title }}
+{{ title and settings.template.site ? ' - ' }}
+{{ settings.template.site }}
+</title>
+{% block styles %}
+{% endblock %}
+</head>
+<body>
+{% block body %}
+{% if settings.template.site or settings.template.menu %}
+<nav>
+<ul>
+{% if settings.template.site %}
+<li><strong><a href="{{ url_for('index') }}">{{ settings.template.site }}</a></strong></li>
+{% endif %}
+{% if settings.template.menu %}
+{% for item in settings.template.menu %}
+<li><a href="{{ item.href }}">{{ item.text }}</a></li>
+{% endfor %}
+{% endif %}
+{% endif %}
+<main id="content">
+{% block content %}
+{% if title %}
+<h1>{{ title }}</h1>
+{% endif %}
+{% for message in messages %}
+<div class="alert alert-{{ message.level }}">{{ message.message }}</div>
+{% endfor %}
+{% endblock %}
+</main>
+{% block scripts %}
+{% endblock %}
+{% endblock %}
+</body>
+</html>
