@@ -2,6 +2,7 @@
 <psalm
     totallyTyped="true"
     ensureArrayStringOffsetsExist="true"
+    resolveFromConfigFile="false"
 >
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
@@ -9,6 +10,7 @@
     <projectFiles>
         <directory name="."/>
         <ignoreFiles>
+            <directory name="cache"/>
             <directory name="vendor"/>
             <directory name="vendor-bin"/>
         </ignoreFiles>
