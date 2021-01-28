@@ -47,12 +47,12 @@ final class Template
         $this->environment->addGlobal('settings', $settings);
 
         $this->environment->addFunction(new TwigFunction(
-            'relative_url_for',
-            [$this->routeParser, 'relativeUrlFor']
+            'url_for',
+            [$this->routeParser, 'urlFor']
         ));
 
         $this->environment->addFunction(new TwigFunction(
-            'url_for',
+            'path_for',
             [$this->routeParser, 'urlFor']
         ));
 
@@ -62,13 +62,38 @@ final class Template
         ));
 
         $this->environment->addFunction(new TwigFunction(
+            'full_path_for',
+            [$this->routeParser, 'fullUrlFor']
+        ));
+
+        $this->environment->addFunction(new TwigFunction(
+            'relative_url_for',
+            [$this->routeParser, 'relativeUrlFor']
+        ));
+
+        $this->environment->addFunction(new TwigFunction(
+            'relative_path_for',
+            [$this->routeParser, 'relativeUrlFor']
+        ));
+
+        $this->environment->addFunction(new TwigFunction(
+            'current_url',
+            [$this, 'currentUrl']
+        ));
+
+        $this->environment->addFunction(new TwigFunction(
             'current_path',
-            [$this, 'currentPath']
+            [$this, 'currentUrl']
+        ));
+
+        $this->environment->addFunction(new TwigFunction(
+            'is_current_url',
+            [$this, 'isCurrentUrl']
         ));
 
         $this->environment->addFunction(new TwigFunction(
             'is_current_path',
-            [$this, 'isCurrentPath']
+            [$this, 'isCurrentUrl']
         ));
     }
 
@@ -78,26 +103,26 @@ final class Template
         return $this->environment->render($name, $context);
     }
 
-    public function currentPath(bool $withQueryString = false): string
+    public function currentUrl(bool $withQueryString = false): string
     {
-        $path = $this->request->getUri()->getPath();
+        $url = $this->request->getUri()->getPath();
 
         if ($withQueryString) {
             $query = $this->request->getUri()->getQuery();
 
             if ($query !== '') {
-                return $path . '?' . $query;
+                return $url . '?' . $query;
             }
         }
 
-        return $path;
+        return $url;
     }
 
     /** @param array<string> $data */
-    public function isCurrentPath(string $routeName, array $data = []): bool
+    public function isCurrentUrl(string $routeName, array $data = []): bool
     {
-        $path = $this->routeParser->urlFor($routeName, $data);
+        $url = $this->routeParser->urlFor($routeName, $data);
 
-        return $path === $this->currentPath();
+        return $url === $this->currentUrl();
     }
 }
