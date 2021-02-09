@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="Lits">
     <description>BGSU LITS PHP Code Sniffer configuration.</description>
-    <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*/cache/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/public/node/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/vendor-bin/*</exclude-pattern>
     <rule ref="PSR12"/>
 
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>

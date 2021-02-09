@@ -19,7 +19,7 @@
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "psr/log": "^1.1",
-        "psr7-sessions/storageless": "^7.0",
+        "psr7-sessions/storageless": "^8.0",
         "slim/http": "^1.1",
         "slim/psr7": "^1.0",
         "slim/slim": "^4.2",

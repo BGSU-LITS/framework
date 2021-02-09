@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use GetOpt\GetOpt;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lits\Config\FrameworkConfig;
 use Lits\Config\SessionConfig;
 use Lits\ErrorHandler\FrameworkErrorHandler;
@@ -135,7 +136,7 @@ return function (Framework $framework): void {
             $settings['session']->testKey();
 
             return SessionMiddleware::fromSymmetricKeyDefaults(
-                $settings['session']->key,
+                InMemory::base64Encoded($settings['session']->key),
                 $settings['session']->expires
             );
         },

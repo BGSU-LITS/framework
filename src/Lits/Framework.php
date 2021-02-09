@@ -42,8 +42,9 @@ final class Framework
         $this->container = $builder->build();
 
         // Create the settings by loading configs from all packages.
-        /** @var Settings */
-        $this->settings = $this->container->get(Settings::class);
+        /** @var Settings $settings */
+        $settings = $this->container->get(Settings::class);
+        $this->settings = $settings;
 
         foreach ($packages as $package) {
             $package->settings($this);
@@ -56,8 +57,9 @@ final class Framework
         $this->checkForProxies();
 
         // Create an application from the container.
-        /** @var App */
-        $this->app = $this->container->get(App::class);
+        /** @var App $app */
+        $app = $this->container->get(App::class);
+        $this->app = $app;
 
         // Find the base path in case project is run from a subdirectory.
         $this->findBasePath();
