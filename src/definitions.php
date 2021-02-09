@@ -136,7 +136,7 @@ return function (Framework $framework): void {
             $settings['session']->testKey();
 
             return SessionMiddleware::fromSymmetricKeyDefaults(
-                InMemory::base64Encoded($settings['session']->key),
+                InMemory::plainText($settings['session']->key),
                 $settings['session']->expires
             );
         },
