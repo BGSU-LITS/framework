@@ -58,12 +58,12 @@ final class Template
 
         $this->environment->addFunction(new TwigFunction(
             'full_url_for',
-            [$this->routeParser, 'fullUrlFor']
+            [$this, 'fullUrlFor']
         ));
 
         $this->environment->addFunction(new TwigFunction(
             'full_path_for',
-            [$this->routeParser, 'fullUrlFor']
+            [$this, 'fullUrlFor']
         ));
 
         $this->environment->addFunction(new TwigFunction(
@@ -116,6 +116,23 @@ final class Template
         }
 
         return $url;
+    }
+
+    /**
+     * @param array<string> $data
+     * @param array<string> $queryParams
+     */
+    public function fullUrlFor(
+        string $routeName,
+        array $data = [],
+        array $queryParams = []
+    ): string {
+        return $this->routeParser->fullUrlFor(
+            $this->request->getUri(),
+            $routeName,
+            $data,
+            $queryParams
+        );
     }
 
     /** @param array<string> $data */
