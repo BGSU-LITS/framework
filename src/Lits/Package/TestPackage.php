@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Lits\Package;
 
-use Lits\Config\FrameworkConfig;
 use Lits\Config\SessionConfig;
 use Lits\Framework;
 use Lits\Package;
@@ -48,10 +47,6 @@ final class TestPackage extends Package
     public function settings(Framework $framework): void
     {
         $settings = $framework->settings();
-
-        \assert($settings['framework'] instanceof FrameworkConfig);
-
-        $settings['framework']->proxies[] = '10.0.0.1';
 
         \assert($settings['session'] instanceof SessionConfig);
 

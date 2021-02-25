@@ -10,7 +10,4 @@ final class FrameworkConfig extends Config
 {
     public ?bool $debug = null;
     public ?string $log = null;
-
-    /** @var ?list<string> */
-    public ?array $proxies = null;
 }

@@ -8,7 +8,6 @@ use DI\Container;
 use DI\ContainerBuilder;
 use DI\Definition\Helper\DefinitionHelper;
 use GetOpt\GetOpt;
-use Lits\Config\FrameworkConfig;
 use Lits\Package\FrameworkPackage;
 use Slim\App;
 use Slim\Http\ServerRequest;
@@ -143,25 +142,13 @@ final class Framework
 
     private function checkForProxies(): void
     {
-        // REMOTE_ADDR header must be specified, and
-        // HTTP_X_FORWARDED_PROTO header must be https.
         if (
-            !isset($_SERVER['REMOTE_ADDR']) ||
             !isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ||
             $_SERVER['HTTP_X_FORWARDED_PROTO'] !== 'https'
         ) {
             return;
         }
 
-        // REMOTE_ADDR header must be in the proxies config.
-        \assert($this->settings['framework'] instanceof FrameworkConfig);
-        $proxies = (array) $this->settings['framework']->proxies;
-
-        if (!\in_array($_SERVER['REMOTE_ADDR'], $proxies, true)) {
-            return;
-        }
-
-        // Set REQUEST_SCHEME and SERVER_PORT headers correctly.
         $_SERVER['REQUEST_SCHEME'] = 'https';
         $_SERVER['SERVER_PORT'] = '443';
     }

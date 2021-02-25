@@ -17,7 +17,6 @@ final class ActionTest extends TestCase
     public function setUp(): void
     {
         $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
-        $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_SCHEME'] = 'http';
         $_SERVER['REQUEST_URI'] = '/test/route';
@@ -32,7 +31,6 @@ final class ActionTest extends TestCase
         $settings = $this->framework->settings();
 
         self::assertInstanceOf(FrameworkConfig::class, $settings['framework']);
-        self::assertNotNull($settings['framework']->proxies);
     }
 
     public function testCanCreateDefinitions(): void
