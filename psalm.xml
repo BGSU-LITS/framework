@@ -1,8 +1,14 @@
 <?xml version="1.0"?>
 <psalm
-    totallyTyped="true"
+    checkForThrowsDocblock="true"
+    ensureArrayIntOffsetsExist="true"
     ensureArrayStringOffsetsExist="true"
-    resolveFromConfigFile="false"
+    errorLevel="1"
+    findUnusedVariablesAndParams="true"
+    findUnusedPsalmSuppress="true"
+    ignoreInternalFunctionFalseReturn="false"
+    ignoreInternalFunctionNullReturn="false"
+    sealAllMethods="true"
 >
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
