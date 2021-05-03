@@ -36,14 +36,6 @@
     "config": {
         "sort-packages": true
     },
-    "autoload": {
-        "psr-4": {
-            "Lits\\": "src/Lits"
-        },
-        "exclude-from-classmap": [
-            "/src/Lits/Test/"
-        ]
-    },
     "extra": {
         "scripts-dev": {
             "post-install-cmd": [
@@ -67,5 +59,25 @@
             ],
             "twigcs": "twigcs ./template"
         }
+    },
+    "autoload": {
+        "psr-4": {
+            "Lits\\": "src/Lits"
+        },
+        "exclude-from-classmap": [
+            "/src/Lits/Test/"
+        ]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@reset-cache"
+        ],
+        "post-update-cmd": [
+            "@reset-cache"
+        ],
+        "reset-cache": "rm -rf ./cache/*"
+    },
+    "scripts-descriptions": {
+        "reset-cache": "Resets the application by deleting all cache files."
     }
 }
