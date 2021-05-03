@@ -34,6 +34,12 @@ abstract class Command
         $this->getopt = $service->getopt;
     }
 
+    public static function output(string $data): void
+    {
+        echo $data;
+        \ob_flush();
+    }
+
     final protected function process(): bool
     {
         $this->getopt->set(GetOpt::SETTING_STRICT_OPTIONS, true);
