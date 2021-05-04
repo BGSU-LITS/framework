@@ -113,6 +113,11 @@ final class Framework
             return;
         }
 
+        // Set HTTP_ACCEPT to text/plain by default.
+        if (!isset($_SERVER['HTTP_ACCEPT'])) {
+            $_SERVER['HTTP_ACCEPT'] = 'text/plain';
+        }
+
         // Set the REQUEST_METHOD to GET by default.
         if (!isset($_SERVER['REQUEST_METHOD'])) {
             $_SERVER['REQUEST_METHOD'] = 'GET';

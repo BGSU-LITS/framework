@@ -11,7 +11,6 @@ use Lits\Framework;
 use Lits\Settings;
 use Middlewares\Whoops;
 use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\ErrorLogHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\PsrLogMessageProcessor;
@@ -70,30 +69,21 @@ return function (Framework $framework): void {
             // Create new Monolog logger.
             $logger = new MonologLogger('lits');
 
-            // Create error_log handler and formatter to use by default.
-            $handler = new ErrorLogHandler();
-
-            // Error log includes datetime by default, so just log details.
-            $format = "%channel%.%level_name%: %message%\n";
-            $formatter = new LineFormatter($format, null, true);
-
             // If log path is specified, create a stream handler and formatter.
             assert($settings['framework'] instanceof FrameworkConfig);
 
             if (!is_null($settings['framework']->log)) {
                 $handler = new StreamHandler($settings['framework']->log);
 
-                // Include the datetime in a similar format for error_log.
-                $formatter = new LineFormatter(
-                    '[%datetime%] ' . $format,
+                // Set the formatter in a similar format for error_log.
+                $handler->setFormatter(new LineFormatter(
+                    "[%datetime%] %channel%.%level_name%: %message%\n",
                     'd-M-Y H:i:s e',
                     true,
-                );
-            }
+                ));
 
-            // Add formatter to handler and add the handler to the logger.
-            $handler->setFormatter($formatter);
-            $logger->pushHandler($handler);
+                $logger->pushHandler($handler);
+            }
 
             // Add the PSR log message processor to the logger.
             $logger->pushProcessor(new PsrLogMessageProcessor());
