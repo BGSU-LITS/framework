@@ -7,6 +7,8 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 use Lits\Config\FrameworkConfig;
 use Lits\Config\SessionConfig;
 use Lits\ErrorHandler\FrameworkErrorHandler;
+use Lits\ErrorRenderer\HtmlErrorRenderer;
+use Lits\ErrorRenderer\PlainTextErrorRenderer;
 use Lits\Framework;
 use Lits\Settings;
 use Middlewares\Whoops;
@@ -53,6 +55,21 @@ return function (Framework $framework): void {
                 'setDefaultErrorHandler',
                 DI\get(FrameworkErrorHandler::class),
             ),
+    );
+
+    $framework->addDefinition(
+        FrameworkErrorHandler::class,
+        DI\autowire()
+            ->method(
+                'registerErrorRenderer',
+                'text/html',
+                HtmlErrorRenderer::class
+            )
+            ->method(
+                'registerErrorRenderer',
+                'text/plain',
+                PlainTextErrorRenderer::class
+            )
     );
 
     $framework->addDefinition(
