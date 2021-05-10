@@ -7,6 +7,7 @@ namespace Lits;
 use DI\Container;
 use DI\ContainerBuilder;
 use DI\Definition\Helper\DefinitionHelper;
+use DI\Definition\Reference;
 use GetOpt\GetOpt;
 use Lits\Package\FrameworkPackage;
 use Slim\App;
@@ -20,7 +21,7 @@ final class Framework
     private Container $container;
     private Settings $settings;
 
-    /** @var array<class-string, callable|DefinitionHelper> */
+    /** @var array<class-string, callable|DefinitionHelper|Reference> */
     private array $definitions = [];
 
     /** @param list<Package> $packages */
@@ -94,7 +95,7 @@ final class Framework
 
     /**
      * @param class-string $class
-     * @param callable|DefinitionHelper $definition
+     * @param callable|DefinitionHelper|Reference $definition
      */
     public function addDefinition(string $class, $definition): void
     {
