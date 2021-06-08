@@ -10,4 +10,5 @@ final class FrameworkConfig extends Config
 {
     public ?bool $debug = null;
     public ?string $log = null;
+    public ?string $timezone = null;
 }

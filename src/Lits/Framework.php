@@ -9,6 +9,7 @@ use DI\ContainerBuilder;
 use DI\Definition\Helper\DefinitionHelper;
 use DI\Definition\Reference;
 use GetOpt\GetOpt;
+use Lits\Config\FrameworkConfig;
 use Lits\Exception\InvalidConfigException;
 use Lits\Exception\InvalidDependencyException;
 use Lits\Package\FrameworkPackage;
@@ -70,6 +71,9 @@ final class Framework
 
         // Check for HTTPS proxies based upon settings.
         $this->checkForProxies();
+
+        // Check for a default timezone.
+        $this->checkForTimezone();
 
         // Create an application from the container.
         try {
@@ -199,6 +203,24 @@ final class Framework
 
         $_SERVER['REQUEST_SCHEME'] = 'https';
         $_SERVER['SERVER_PORT'] = '443';
+    }
+
+    /** @throws InvalidConfigException */
+    private function checkForTimezone(): void
+    {
+        \assert($this->settings['framework'] instanceof FrameworkConfig);
+
+        if (\is_null($this->settings['framework']->timezone)) {
+            return;
+        }
+
+        $timezone = $this->settings['framework']->timezone;
+
+        if (!\date_default_timezone_set($timezone)) {
+            throw new InvalidConfigException(
+                'The timezone "' . $timezone . '" is not valid'
+            );
+        }
     }
 
     private function findBasePath(): void
