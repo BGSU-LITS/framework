@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Lits;
 
+use Lits\Exception\FailedResponseException;
+use Lits\Exception\InvalidTemplateException;
 use Lits\Service\ActionService;
 use PSR7Sessions\Storageless\Http\SessionMiddleware;
 use PSR7Sessions\Storageless\Session\SessionInterface as Session;
 use Psr\Log\LoggerInterface as Logger;
 use ReflectionClass;
+use RuntimeException;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 use Slim\Interfaces\RouteCollectorInterface as RouteCollector;
+use Throwable;
 
 abstract class Action
 {
@@ -42,20 +46,38 @@ abstract class Action
         $this->template = $service->template;
     }
 
+    /** @throws FailedResponseException */
     protected function cors(string $origin = '*'): void
     {
-        $this->response = $this->response->withHeader(
-            'Access-Control-Allow-Origin',
-            $origin
-        );
+        try {
+            $this->response = $this->response->withHeader(
+                'Access-Control-Allow-Origin',
+                $origin
+            );
+        } catch (Throwable $exception) {
+            throw new FailedResponseException(
+                'Could not add header to response',
+                0,
+                $exception
+            );
+        }
     }
 
+    /** @throws FailedResponseException */
     protected function json(): void
     {
-        $this->response = $this->response->withHeader(
-            'Content-Type',
-            'application/json'
-        );
+        try {
+            $this->response = $this->response->withHeader(
+                'Content-Type',
+                'application/json'
+            );
+        } catch (Throwable $exception) {
+            throw new FailedResponseException(
+                'Could not add header to response',
+                0,
+                $exception
+            );
+        }
     }
 
     /** @param array<string, string> $data */
@@ -104,7 +126,7 @@ abstract class Action
             'message' => $message,
         ];
 
-        $this->session->set('messages', $message);
+        $this->session->set('messages', $messages);
     }
 
     final protected function redirect(
@@ -118,14 +140,26 @@ abstract class Action
         $this->response = $this->response->withRedirect($url, $status);
     }
 
-    /** @param array<string, mixed> $context */
+    /**
+     * @param array<string, mixed> $context
+     * @throws FailedResponseException
+     * @throws InvalidTemplateException
+     */
     final protected function render(string $name, array $context = []): void
     {
         $context['messages'] = $this->messages;
 
-        $this->response->getBody()->write(
-            $this->template->render($name, $context)
-        );
+        try {
+            $this->response->getBody()->write(
+                $this->template->render($name, $context)
+            );
+        } catch (RuntimeException $exception) {
+            throw new FailedResponseException(
+                'Could not write to the response body',
+                0,
+                $exception
+            );
+        }
     }
 
     final protected function template(): string

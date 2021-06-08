@@ -6,6 +6,6 @@ namespace Lits\Exception;
 
 use Lits\Exception;
 
-final class InvalidConfigException extends Exception
+final class FailedRoutingException extends Exception
 {
 }

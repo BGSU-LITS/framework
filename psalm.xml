@@ -11,6 +11,18 @@
     resolveFromConfigFile="false"
     sealAllMethods="true"
 >
+    <issueHandlers>
+        <MissingThrowsDocblock>
+            <errorLevel type="suppress">
+                <directory name="src/Lits/Test" />
+            </errorLevel>
+        </MissingThrowsDocblock>
+        <UnusedClosureParam>
+            <errorLevel type="suppress">
+                <file name="src/*.php" />
+            </errorLevel>
+        </UnusedClosureParam>
+    </issueHandlers>
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
     </plugins>

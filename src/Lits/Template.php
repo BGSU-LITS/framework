@@ -6,9 +6,12 @@ namespace Lits;
 
 use Lits\Config\FrameworkConfig;
 use Lits\Config\TemplateConfig;
+use Lits\Exception\FailedRoutingException;
+use Lits\Exception\InvalidTemplateException;
 use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 use Slim\Interfaces\RouteCollectorInterface as RouteCollector;
 use Slim\Interfaces\RouteParserInterface as RouteParser;
+use Throwable;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
@@ -97,49 +100,89 @@ final class Template
         ));
     }
 
-    /** @param array<string, mixed> $context */
+    /**
+     * @param array<string, mixed> $context
+     * @throws InvalidTemplateException
+     */
     public function render(string $name, array $context = []): string
     {
-        return $this->environment->render($name, $context);
+        try {
+            return $this->environment->render($name, $context);
+        } catch (Throwable $exception) {
+            throw new InvalidTemplateException(
+                'The requested template could not be rendered',
+                0,
+                $exception
+            );
+        }
     }
 
+    /** @throws FailedRoutingException */
     public function currentUrl(bool $withQueryString = false): string
     {
-        $url = $this->request->getUri()->getPath();
+        try {
+            $url = $this->request->getUri()->getPath();
 
-        if ($withQueryString) {
-            $query = $this->request->getUri()->getQuery();
+            if ($withQueryString) {
+                $query = $this->request->getUri()->getQuery();
 
-            if ($query !== '') {
-                return $url . '?' . $query;
+                if ($query !== '') {
+                    return $url . '?' . $query;
+                }
             }
-        }
 
-        return $url;
+            return $url;
+        } catch (Throwable $exception) {
+            throw new FailedRoutingException(
+                'The URL could not be obtained',
+                0,
+                $exception
+            );
+        }
     }
 
     /**
      * @param array<string> $data
      * @param array<string> $queryParams
+     * @throws FailedRoutingException
      */
     public function fullUrlFor(
         string $routeName,
         array $data = [],
         array $queryParams = []
     ): string {
-        return $this->routeParser->fullUrlFor(
-            $this->request->getUri(),
-            $routeName,
-            $data,
-            $queryParams
-        );
+        try {
+            return $this->routeParser->fullUrlFor(
+                $this->request->getUri(),
+                $routeName,
+                $data,
+                $queryParams
+            );
+        } catch (Throwable $exception) {
+            throw new FailedRoutingException(
+                'The URL could not be obtained',
+                0,
+                $exception
+            );
+        }
     }
 
-    /** @param array<string> $data */
+    /**
+     * @param array<string> $data
+     * @throws FailedRoutingException
+     */
     public function isCurrentUrl(string $routeName, array $data = []): bool
     {
-        $url = $this->routeParser->urlFor($routeName, $data);
+        try {
+            $url = $this->routeParser->urlFor($routeName, $data);
 
-        return $url === $this->currentUrl();
+            return $url === $this->currentUrl();
+        } catch (Throwable $exception) {
+            throw new FailedRoutingException(
+                'The URL could not be obtained',
+                0,
+                $exception
+            );
+        }
     }
 }

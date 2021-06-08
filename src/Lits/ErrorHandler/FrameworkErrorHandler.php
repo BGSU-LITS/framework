@@ -20,6 +20,7 @@ final class FrameworkErrorHandler extends ErrorHandler
     ) {
         parent::__construct($callableResolver, $responseFactory, $logger);
 
+        /** @psalm-suppress UnusedClosureParam */
         $this->logErrorRenderer = fn (
             Throwable $exception,
             bool $displayErrorDetails

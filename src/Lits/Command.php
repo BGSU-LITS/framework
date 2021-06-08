@@ -6,7 +6,7 @@ namespace Lits;
 
 use GetOpt\ArgumentException;
 use GetOpt\GetOpt;
-use Lits\Exception\InvalidAccessException;
+use Lits\Exception\FailedCommandException;
 use Lits\Service\CommandService;
 use Psr\Log\LoggerInterface as Logger;
 use Slim\Http\Response;
@@ -48,9 +48,7 @@ abstract class Command
         try {
             $this->getopt->process();
         } catch (ArgumentException $exception) {
-            $this->response->getBody()->write(
-                $this->getopt->getHelpText()
-            );
+            self::output($this->getopt->getHelpText());
 
             return false;
         }
@@ -58,7 +56,10 @@ abstract class Command
         return true;
     }
 
-    /** @param array<string, string> $data */
+    /**
+     * @param array<string, string> $data
+     * @throws FailedCommandException
+     */
     protected function setup(
         ServerRequest $request,
         Response $response,
@@ -69,13 +70,16 @@ abstract class Command
         $this->data = $data;
 
         if (\PHP_SAPI !== 'cli') {
-            throw new InvalidAccessException(
-                'Command not accessed via CLI.'
+            throw new FailedCommandException(
+                'The command was not accessed via CLI'
             );
         }
     }
 
-    /** @param array<string, string> $data */
+    /**
+     * @param array<string, string> $data
+     * @throws FailedCommandException
+     */
     public function __invoke(
         ServerRequest $request,
         Response $response,
