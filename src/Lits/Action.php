@@ -134,7 +134,7 @@ abstract class Action
         ?int $status = null
     ): void {
         if (\is_null($url)) {
-            $url = $this->routeCollector->getBasePath();
+            $url = \rtrim($this->routeCollector->getBasePath(), '/') . '/';
         }
 
         $this->response = $this->response->withRedirect($url, $status);
