@@ -38,18 +38,18 @@
     },
     "extra": {
         "scripts-dev": {
+            "phpcbf": "phpcbf ./ --standard=phpcs.xml",
+            "phpcs": "phpcs ./ --standard=phpcs.xml",
+            "phplint": "phplint ./ --exclude=vendor",
+            "phpstan": "phpstan analyse -c phpstan.neon",
+            "phpunit": "phpunit -c phpunit.xml",
             "post-install-cmd": [
                 "@composer bin all install --ansi"
             ],
             "post-update-cmd": [
                 "@composer bin all update --ansi"
             ],
-            "phpcbf": "phpcbf ./ --standard=phpcs.xml",
-            "phpcs": "phpcs ./ --standard=phpcs.xml",
-            "phplint": "phplint ./ --exclude=vendor",
-            "phpstan": "phpstan analyse -c phpstan.neon",
-            "phpunit": "phpunit -c phpunit.xml",
-            "psalm": "psalm -c psalm.xml",
+            "psalm": "psalm --config=psalm.xml",
             "test": [
                 "@phplint",
                 "@phpcs",
