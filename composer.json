@@ -10,6 +10,8 @@
     ],
     "require": {
         "php": "^7.4",
+        "ext-date": "*",
+        "lcobucci/jwt": "^4.1",
         "middlewares/whoops": "^2.0",
         "monolog/monolog": "^2.0",
         "php-di/php-di": "^6.0",
@@ -25,7 +27,7 @@
         "slim/slim": "^4.2",
         "thecodingmachine/safe": "^1.0",
         "twig/twig": "^3.1",
-        "ulrichsg/getopt-php": "^3.4"
+        "ulrichsg/getopt-php": "^4.0"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.3",
