@@ -44,7 +44,7 @@ final class SessionConfig extends Config
 
         if (\strlen($decoded) < self::MINIMUM_BITS) {
             throw new InvalidConfigException(
-                'The session key must have ' . self::MINIMUM_BITS .
+                'The session key must have ' . (string) self::MINIMUM_BITS .
                 ' bits of entropy',
             );
         }

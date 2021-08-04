@@ -15,7 +15,7 @@ final class TestPackage extends Package
 {
     public function definitions(Framework $framework): void
     {
-        $framework->addDefinition(TestPackage::class, fn () => true);
+        $framework->addDefinition(self::class, fn () => true);
     }
 
     public function middleware(Framework $framework): void
