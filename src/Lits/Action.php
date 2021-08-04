@@ -10,12 +10,9 @@ use Lits\Service\ActionService;
 use PSR7Sessions\Storageless\Http\SessionMiddleware;
 use PSR7Sessions\Storageless\Session\SessionInterface as Session;
 use Psr\Log\LoggerInterface as Logger;
-use ReflectionClass;
-use RuntimeException;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 use Slim\Interfaces\RouteCollectorInterface as RouteCollector;
-use Throwable;
 
 abstract class Action
 {
@@ -54,7 +51,7 @@ abstract class Action
                 'Access-Control-Allow-Origin',
                 $origin
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new FailedResponseException(
                 'Could not add header to response',
                 0,
@@ -71,7 +68,7 @@ abstract class Action
                 'Content-Type',
                 'application/json'
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new FailedResponseException(
                 'Could not add header to response',
                 0,
@@ -153,7 +150,7 @@ abstract class Action
             $this->response->getBody()->write(
                 $this->template->render($name, $context)
             );
-        } catch (RuntimeException $exception) {
+        } catch (\RuntimeException $exception) {
             throw new FailedResponseException(
                 'Could not write to the response body',
                 0,
@@ -164,7 +161,7 @@ abstract class Action
 
     final protected function template(): string
     {
-        $reflection = new ReflectionClass($this);
+        $reflection = new \ReflectionClass($this);
         $namespace = \explode('\\', $reflection->getNamespaceName());
 
         \array_shift($namespace);

@@ -11,7 +11,6 @@ use Lits\Exception\InvalidTemplateException;
 use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 use Slim\Interfaces\RouteCollectorInterface as RouteCollector;
 use Slim\Interfaces\RouteParserInterface as RouteParser;
-use Throwable;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
@@ -108,7 +107,7 @@ final class Template
     {
         try {
             return $this->environment->render($name, $context);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new InvalidTemplateException(
                 'The requested template could not be rendered',
                 0,
@@ -132,7 +131,7 @@ final class Template
             }
 
             return $url;
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new FailedRoutingException(
                 'The URL could not be obtained',
                 0,
@@ -158,7 +157,7 @@ final class Template
                 $data,
                 $queryParams
             );
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new FailedRoutingException(
                 'The URL could not be obtained',
                 0,
@@ -177,7 +176,7 @@ final class Template
             $url = $this->routeParser->urlFor($routeName, $data);
 
             return $url === $this->currentUrl();
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new FailedRoutingException(
                 'The URL could not be obtained',
                 0,

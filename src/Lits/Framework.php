@@ -15,7 +15,6 @@ use Lits\Exception\InvalidDependencyException;
 use Lits\Package\FrameworkPackage;
 use Slim\App;
 use Slim\Http\ServerRequest;
-use Throwable;
 
 final class Framework
 {
@@ -54,7 +53,7 @@ final class Framework
             /** @var Settings $settings */
             $settings = $this->container->get(Settings::class);
             $this->settings = $settings;
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new InvalidDependencyException(
                 'Could not load dependency from container',
                 0,
@@ -80,7 +79,7 @@ final class Framework
             /** @var App $app */
             $app = $this->container->get(App::class);
             $this->app = $app;
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new InvalidDependencyException(
                 'Could not load dependency from container',
                 0,
@@ -118,7 +117,7 @@ final class Framework
         try {
             /** @var ServerRequest */
             $request = $this->container->get(ServerRequest::class);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new InvalidDependencyException(
                 'Could not load dependency from container',
                 0,
@@ -164,7 +163,7 @@ final class Framework
         try {
             /** @var GetOpt */
             $getopt = $this->container->get(GetOpt::class);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new InvalidDependencyException(
                 'Could not load dependency from container',
                 0,

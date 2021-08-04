@@ -7,7 +7,6 @@ namespace Lits\ErrorRenderer;
 use Lits\ErrorRenderer;
 use Lits\Exception\InvalidTemplateException;
 use Lits\Template;
-use Throwable;
 
 final class HtmlErrorRenderer extends ErrorRenderer
 {
@@ -22,7 +21,7 @@ final class HtmlErrorRenderer extends ErrorRenderer
 
     /** @throws InvalidTemplateException */
     public function __invoke(
-        Throwable $exception,
+        \Throwable $exception,
         bool $displayErrorDetails
     ): string {
         return $this->template->render('error.html.twig', [

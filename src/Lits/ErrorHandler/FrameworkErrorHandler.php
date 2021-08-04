@@ -8,7 +8,6 @@ use Psr\Http\Message\ResponseFactoryInterface as ResponseFactory;
 use Psr\Log\LoggerInterface as Logger;
 use Slim\Handlers\ErrorHandler;
 use Slim\Interfaces\CallableResolverInterface as CallableResolver;
-use Throwable;
 
 /** @psalm-suppress PropertyNotSetInConstructor */
 final class FrameworkErrorHandler extends ErrorHandler
@@ -22,7 +21,7 @@ final class FrameworkErrorHandler extends ErrorHandler
 
         /** @psalm-suppress UnusedClosureParam */
         $this->logErrorRenderer = fn (
-            Throwable $exception,
+            \Throwable $exception,
             bool $displayErrorDetails
         ): string => (string) $exception;
     }

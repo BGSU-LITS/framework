@@ -6,7 +6,6 @@ namespace Lits\Config;
 
 use Lits\Config;
 use Lits\Exception\InvalidConfigException;
-use Throwable;
 
 use function Safe\base64_decode;
 
@@ -28,7 +27,7 @@ final class SessionConfig extends Config
 
         try {
             $decoded = base64_decode($this->key, true);
-        } catch (Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new InvalidConfigException(
                 'The session key must be base64 encoded',
                 0,
