@@ -203,7 +203,6 @@
             <property name="spacesCountAroundEqualsSign" value="false"/>
         </properties>
     </rule>
-    <rule ref="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax"/>
     <rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
     <rule ref="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition"/>
     <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
