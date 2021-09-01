@@ -24,11 +24,15 @@
 <li><a href="{{ item.href }}">{{ item.text }}</a></li>
 {% endfor %}
 {% endif %}
+</ul>
+</nav>
 {% endif %}
 <main id="content">
 {% block content %}
 {% if title %}
 <h1>{{ title }}</h1>
+{% elseif settings.template.site %}
+<h1>{{ settings.template.site }}</h1>
 {% endif %}
 {% for message in messages %}
 <div class="alert alert-{{ message.level }}">{{ message.message }}</div>
