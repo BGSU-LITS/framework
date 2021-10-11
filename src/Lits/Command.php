@@ -48,6 +48,7 @@ abstract class Command
         try {
             $this->getopt->process();
         } catch (ArgumentException $exception) {
+            self::output($exception->getMessage() . \PHP_EOL . \PHP_EOL);
             self::output($this->getopt->getHelpText());
 
             return false;
