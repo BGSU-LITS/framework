@@ -18,6 +18,11 @@
                 <directory name="src/Lits/Test" />
             </errorLevel>
         </MissingThrowsDocblock>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <directory name="src/Lits/Data" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
         <UnusedClosureParam>
             <errorLevel type="suppress">
                 <file name="src/*.php" />
