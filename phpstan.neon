@@ -1,7 +1,7 @@
 parameters:
   ignoreErrors:
     - '# value type specified in iterable type GetOpt\\GetOpt\.#'
-  level: max
+  level: 8
   paths:
     - %currentWorkingDirectory%/src/
   reportUnmatchedIgnoredErrors: false
