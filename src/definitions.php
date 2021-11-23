@@ -3,9 +3,13 @@
 declare(strict_types=1);
 
 use GetOpt\GetOpt;
-use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\Configuration as SessionConfiguration;
+use Lcobucci\JWT\Signer\Hmac\Sha256 as SignerHmacSha256;
+use Lcobucci\JWT\Signer\Key\InMemory as SignerKeyInMemory;
 use Lits\Config\FrameworkConfig;
 use Lits\Config\SessionConfig;
+use Lits\Config\TemplateConfig;
 use Lits\ErrorHandler\FrameworkErrorHandler;
 use Lits\ErrorRenderer\HtmlErrorRenderer;
 use Lits\ErrorRenderer\PlainTextErrorRenderer;
@@ -32,6 +36,10 @@ use Slim\Interfaces\CallableResolverInterface as CallableResolver;
 use Slim\Interfaces\RouteCollectorInterface as RouteCollector;
 use Slim\Middleware\ErrorMiddleware;
 use Slim\Routing\RouteCollector as SlimRoutingRouteCollector;
+use Symfony\Component\EventDispatcher\EventDispatcher as SymfonyDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as Dispatcher;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 return function (Framework $framework): void {
     $framework->addDefinition(
@@ -43,6 +51,33 @@ return function (Framework $framework): void {
         CallableResolver::class,
         DI\autowire(SlimCallableResolver::class)
             ->constructorParameter('container', DI\get(Container::class)),
+    );
+
+    $framework->addDefinition(
+        Dispatcher::class,
+        DI\create(SymfonyDispatcher::class)
+    );
+
+    $framework->addDefinition(
+        Environment::class,
+        function (Settings $settings): Environment {
+            assert($settings['framework'] instanceof FrameworkConfig);
+            assert($settings['template'] instanceof TemplateConfig);
+
+            $paths = [];
+
+            if (!is_null($settings['template']->paths)) {
+                $paths = array_reverse($settings['template']->paths);
+            }
+
+            return new Environment(
+                new FilesystemLoader($paths),
+                [
+                    'cache' => $settings['template']->cache ?? false,
+                    'debug' => $settings['framework']->debug ?? false,
+                ]
+            );
+        }
     );
 
     $framework->addDefinition(
@@ -116,12 +151,12 @@ return function (Framework $framework): void {
 
     $framework->addDefinition(
         ResponseFactory::class,
-        DI\factory([AppFactory::class, 'determineResponseFactory']),
+        fn () => AppFactory::determineResponseFactory(),
     );
 
     $framework->addDefinition(
         RouteCollector::class,
-        DI\autowire(SlimRoutingRouteCollector::class)
+        DI\get(SlimRoutingRouteCollector::class)
     );
 
     $framework->addDefinition(
@@ -132,19 +167,38 @@ return function (Framework $framework): void {
 
     $framework->addDefinition(
         Session::class,
-        DI\factory([DefaultSessionData::class, 'newEmptySession']),
+        fn () => DefaultSessionData::newEmptySession()
     );
 
     $framework->addDefinition(
-        SessionMiddleware::class,
-        function (Settings $settings): SessionMiddleware {
+        SessionConfiguration::class,
+        function (Settings $settings): SessionConfiguration {
             assert($settings['session'] instanceof SessionConfig);
 
             $settings['session']->testKey();
 
-            return SessionMiddleware::fromSymmetricKeyDefaults(
-                InMemory::plainText($settings['session']->key),
-                $settings['session']->expires
+            return SessionConfiguration::forSymmetricSigner(
+                new SignerHmacSha256(),
+                SignerKeyInMemory::plainText($settings['session']->key)
+            );
+        }
+    );
+
+    $framework->addDefinition(
+        SessionMiddleware::class,
+        function (
+            Settings $settings,
+            SessionConfiguration $configuration
+        ): SessionMiddleware {
+            assert($settings['session'] instanceof SessionConfig);
+
+            return new SessionMiddleware(
+                $configuration,
+                SessionMiddleware::buildDefaultCookie(),
+                $settings['session']->expires,
+                new SystemClock(
+                    new DateTimeZone(date_default_timezone_get())
+                )
             );
         },
     );

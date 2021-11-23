@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace Lits;
 
-use Lits\Config\FrameworkConfig;
-use Lits\Config\TemplateConfig;
 use Lits\Exception\FailedRoutingException;
 use Lits\Exception\InvalidTemplateException;
 use Psr\Http\Message\ServerRequestInterface as ServerRequest;
 use Slim\Interfaces\RouteCollectorInterface as RouteCollector;
 use Slim\Interfaces\RouteParserInterface as RouteParser;
 use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
 final class Template
@@ -22,81 +19,47 @@ final class Template
     private RouteParser $routeParser;
 
     public function __construct(
+        Environment $environment,
         ServerRequest $request,
         RouteCollector $routeCollector,
         Settings $settings
     ) {
+        $this->environment = $environment;
         $this->routeParser = $routeCollector->getRouteParser();
         $this->request = $request;
 
-        \assert($settings['framework'] instanceof FrameworkConfig);
-        \assert($settings['template'] instanceof TemplateConfig);
+        $this->global('settings', $settings);
 
-        $paths = [];
+        $this->function('url_for', [$this->routeParser, 'urlFor']);
+        $this->function('path_for', [$this->routeParser, 'urlFor']);
+        $this->function('full_url_for', [$this, 'fullUrlFor']);
+        $this->function('full_path_for', [$this, 'fullUrlFor']);
 
-        if (!\is_null($settings['template']->paths)) {
-            $paths = \array_reverse($settings['template']->paths);
-        }
-
-        $this->environment = new Environment(
-            new FilesystemLoader($paths),
-            [
-                'cache' => $settings['template']->cache ?? false,
-                'debug' => $settings['framework']->debug ?? false,
-            ]
-        );
-
-        $this->environment->addGlobal('settings', $settings);
-
-        $this->environment->addFunction(new TwigFunction(
-            'url_for',
-            [$this->routeParser, 'urlFor']
-        ));
-
-        $this->environment->addFunction(new TwigFunction(
-            'path_for',
-            [$this->routeParser, 'urlFor']
-        ));
-
-        $this->environment->addFunction(new TwigFunction(
-            'full_url_for',
-            [$this, 'fullUrlFor']
-        ));
-
-        $this->environment->addFunction(new TwigFunction(
-            'full_path_for',
-            [$this, 'fullUrlFor']
-        ));
-
-        $this->environment->addFunction(new TwigFunction(
+        $this->function(
             'relative_url_for',
             [$this->routeParser, 'relativeUrlFor']
-        ));
+        );
 
-        $this->environment->addFunction(new TwigFunction(
+        $this->function(
             'relative_path_for',
             [$this->routeParser, 'relativeUrlFor']
-        ));
+        );
 
-        $this->environment->addFunction(new TwigFunction(
-            'current_url',
-            [$this, 'currentUrl']
-        ));
+        $this->function('current_url', [$this, 'currentUrl']);
+        $this->function('current_path', [$this, 'currentUrl']);
+        $this->function('is_current_url', [$this, 'isCurrentUrl']);
+        $this->function('is_current_path', [$this, 'isCurrentUrl']);
+    }
 
-        $this->environment->addFunction(new TwigFunction(
-            'current_path',
-            [$this, 'currentUrl']
-        ));
+    public function function(string $name, callable $callable): void
+    {
+        $this->environment->addFunction(new TwigFunction($name, $callable));
+    }
 
-        $this->environment->addFunction(new TwigFunction(
-            'is_current_url',
-            [$this, 'isCurrentUrl']
-        ));
-
-        $this->environment->addFunction(new TwigFunction(
-            'is_current_path',
-            [$this, 'isCurrentUrl']
-        ));
+    /** @param mixed $value */
+    public function global(string $name, $value): void
+    {
+        $this->environment->addGlobal($name, $value);
     }
 
     /**

@@ -15,6 +15,7 @@ use Lits\Exception\InvalidDependencyException;
 use Lits\Package\FrameworkPackage;
 use Slim\App;
 use Slim\Http\ServerRequest;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as Dispatcher;
 
 final class Framework
 {
@@ -22,6 +23,7 @@ final class Framework
 
     private App $app;
     private Container $container;
+    private Dispatcher $dispatcher;
     private Settings $settings;
 
     /** @var array<class-string, callable|DefinitionHelper|Reference> */
@@ -47,6 +49,23 @@ final class Framework
         $builder = new ContainerBuilder();
         $builder->addDefinitions($this->definitions);
         $this->container = $builder->build();
+
+        // Create the dispatcher by loading events from all packages.
+        try {
+            /** @var Dispatcher $dispatcher */
+            $dispatcher = $this->container->get(Dispatcher::class);
+            $this->dispatcher = $dispatcher;
+        } catch (\Throwable $exception) {
+            throw new InvalidDependencyException(
+                'Could not load dependency from container',
+                0,
+                $exception
+            );
+        }
+
+        foreach ($packages as $package) {
+            $package->events($this);
+        }
 
         // Create the settings by loading configs from all packages.
         try {
@@ -90,8 +109,8 @@ final class Framework
         // Find the base path in case project is run from a subdirectory.
         $this->findBasePath();
 
-        // Add any middleware from packages to the application.
-        foreach ($packages as $package) {
+        // Add middleware from packages to the application in reverse order.
+        foreach (\array_reverse($packages) as $package) {
             $package->middleware($this);
         }
 
@@ -104,6 +123,16 @@ final class Framework
     public function app(): App
     {
         return $this->app;
+    }
+
+    public function container(): Container
+    {
+        return $this->container;
+    }
+
+    public function dispatcher(): Dispatcher
+    {
+        return $this->dispatcher;
     }
 
     public function settings(): Settings

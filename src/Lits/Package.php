@@ -6,6 +6,7 @@ namespace Lits;
 
 /**
  * @method null definitions(Framework $framework)
+ * @method null events(Framework $framework)
  * @method null middleware(Framework $framework)
  * @method null routes(Framework $framework)
  * @method null settings(Framework $framework)
