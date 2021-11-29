@@ -171,11 +171,16 @@ final class Framework
         $this->settings[$name] = $config;
     }
 
+    public function isCli(): bool
+    {
+        return $this->sapi === 'cli';
+    }
+
     /** @throws InvalidDependencyException */
     private function checkForCommands(): void
     {
         // Only check for commands when using PHP from the command line.
-        if ($this->sapi !== 'cli') {
+        if (!$this->isCli()) {
             return;
         }
 
