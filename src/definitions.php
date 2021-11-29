@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Dflydev\FigCookies\Modifier\SameSite;
+use Dflydev\FigCookies\SetCookie;
 use GetOpt\GetOpt;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Configuration as SessionConfiguration;
@@ -194,11 +196,13 @@ return function (Framework $framework): void {
 
             return new SessionMiddleware(
                 $configuration,
-                SessionMiddleware::buildDefaultCookie(),
+                SetCookie::create('__Host-lits-session')
+                    ->withSecure(true)
+                    ->withHttpOnly(true)
+                    ->withSameSite(SameSite::lax())
+                    ->withPath('/'),
                 $settings['session']->expires,
-                new SystemClock(
-                    new DateTimeZone(date_default_timezone_get())
-                )
+                SystemClock::fromSystemTimezone()
             );
         },
     );
