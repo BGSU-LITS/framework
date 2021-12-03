@@ -37,7 +37,10 @@ abstract class Command
     public static function output(string $data): void
     {
         echo $data;
-        \ob_flush();
+
+        if (\ob_get_level() > 0) {
+            \ob_flush();
+        }
     }
 
     final protected function process(): bool
