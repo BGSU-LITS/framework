@@ -110,6 +110,23 @@ abstract class Action
         $this->session->remove('messages');
     }
 
+    /** @return string[] */
+    final protected function hierarchy(): array
+    {
+        $reflection = new \ReflectionClass($this);
+        $hierarchy = \explode('\\', $reflection->getNamespaceName());
+
+        \array_shift($hierarchy);
+
+        $hierarchy[] = \str_replace(
+            \implode('', \array_reverse($hierarchy)),
+            '',
+            $reflection->getShortName()
+        );
+
+        return $hierarchy;
+    }
+
     final protected function message(string $level, string $message): void
     {
         $messages = $this->session->get('messages');
@@ -161,19 +178,10 @@ abstract class Action
 
     final protected function template(): string
     {
-        $reflection = new \ReflectionClass($this);
-        $namespace = \explode('\\', $reflection->getNamespaceName());
-
-        \array_shift($namespace);
-
-        $filename = \strtolower(\str_replace(
-            \implode('', \array_reverse($namespace)),
-            '',
-            $reflection->getShortName()
-        ));
-
-        return \strtolower(\implode(\DIRECTORY_SEPARATOR, $namespace)) .
-            \DIRECTORY_SEPARATOR . $filename . '.html.twig';
+        return \strtolower(
+            \implode(\DIRECTORY_SEPARATOR, $this->hierarchy()) .
+            '.html.twig'
+        );
     }
 
     /** @param array<string, string> $data */
