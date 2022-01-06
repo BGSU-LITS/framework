@@ -33,11 +33,7 @@
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
     </plugins>
     <projectFiles>
-        <directory name="."/>
-        <ignoreFiles>
-            <directory name="cache"/>
-            <directory name="vendor"/>
-            <directory name="vendor-bin"/>
-        </ignoreFiles>
+        <directory name="src"/>
+        <file name="*.php*"/>
     </projectFiles>
 </psalm>
