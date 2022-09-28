@@ -1,5 +1,5 @@
 {
     "require-dev": {
-        "friendsoftwig/twigcs": "^5.0"
+        "friendsoftwig/twigcs": "^6.0"
     }
 }
