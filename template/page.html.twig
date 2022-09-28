@@ -34,8 +34,12 @@
 {% elseif settings.template.site %}
 <h1>{{ settings.template.site }}</h1>
 {% endif %}
+{% block breadcrumb %}
+{% endblock %}
 {% for message in messages %}
-<div class="alert alert-{{ message.level }}">{{ message.message }}</div>
+<div class="bgsu_common_alert bgsu_common_alert__{{ message.level }}">
+{{ message.message }}
+</div>
 {% endfor %}
 {% endblock %}
 </main>
