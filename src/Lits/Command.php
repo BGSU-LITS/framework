@@ -23,6 +23,23 @@ abstract class Command
     /** @var array<string, string> */
     protected array $data = [];
 
+    final protected function process(): bool
+    {
+        $this->getopt->set(GetOpt::SETTING_STRICT_OPTIONS, true);
+        $this->getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);
+
+        try {
+            $this->getopt->process();
+        } catch (ArgumentException $exception) {
+            self::output($exception->getMessage() . \PHP_EOL . \PHP_EOL);
+            self::output($this->getopt->getHelpText());
+
+            return false;
+        }
+
+        return true;
+    }
+
     abstract protected function command(): void;
 
     public function __construct(CommandService $service)
@@ -41,23 +58,6 @@ abstract class Command
         if (\ob_get_level() > 0) {
             \ob_flush();
         }
-    }
-
-    final protected function process(): bool
-    {
-        $this->getopt->set(GetOpt::SETTING_STRICT_OPTIONS, true);
-        $this->getopt->set(GetOpt::SETTING_STRICT_OPERANDS, true);
-
-        try {
-            $this->getopt->process();
-        } catch (ArgumentException $exception) {
-            self::output($exception->getMessage() . \PHP_EOL . \PHP_EOL);
-            self::output($this->getopt->getHelpText());
-
-            return false;
-        }
-
-        return true;
     }
 
     /**

@@ -104,8 +104,8 @@ final class Template
     }
 
     /**
-     * @param array<string> $data
-     * @param array<string> $queryParams
+     * @param array<string, string> $data
+     * @param array<string, string> $queryParams
      * @throws FailedRoutingException
      */
     public function fullUrlFor(
@@ -130,7 +130,7 @@ final class Template
     }
 
     /**
-     * @param array<string> $data
+     * @param array<string, string> $data
      * @throws FailedRoutingException
      */
     public function isCurrentUrl(string $routeName, array $data = []): bool

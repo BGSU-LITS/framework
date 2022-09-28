@@ -51,34 +51,18 @@ final class Framework
         $this->container = $builder->build();
 
         // Create the dispatcher by loading events from all packages.
-        try {
-            /** @var Dispatcher $dispatcher */
-            $dispatcher = $this->container->get(Dispatcher::class);
-            $this->dispatcher = $dispatcher;
-        } catch (\Throwable $exception) {
-            throw new InvalidDependencyException(
-                'Could not load dependency from container',
-                0,
-                $exception
-            );
-        }
+        /** @var Dispatcher $dispatcher */
+        $dispatcher = $this->getDependency(Dispatcher::class);
+        $this->dispatcher = $dispatcher;
 
         foreach ($packages as $package) {
             $package->events($this);
         }
 
         // Create the settings by loading configs from all packages.
-        try {
-            /** @var Settings $settings */
-            $settings = $this->container->get(Settings::class);
-            $this->settings = $settings;
-        } catch (\Throwable $exception) {
-            throw new InvalidDependencyException(
-                'Could not load dependency from container',
-                0,
-                $exception
-            );
-        }
+        /** @var Settings $settings */
+        $settings = $this->getDependency(Settings::class);
+        $this->settings = $settings;
 
         foreach ($packages as $package) {
             $package->settings($this);
@@ -94,17 +78,9 @@ final class Framework
         $this->checkForTimezone();
 
         // Create an application from the container.
-        try {
-            /** @var App $app */
-            $app = $this->container->get(App::class);
-            $this->app = $app;
-        } catch (\Throwable $exception) {
-            throw new InvalidDependencyException(
-                'Could not load dependency from container',
-                0,
-                $exception
-            );
-        }
+        /** @var App $app */
+        $app = $this->getDependency(App::class);
+        $this->app = $app;
 
         // Find the base path in case project is run from a subdirectory.
         $this->findBasePath();
@@ -143,17 +119,8 @@ final class Framework
     /** @throws InvalidDependencyException */
     public function run(): void
     {
-        try {
-            /** @var ServerRequest */
-            $request = $this->container->get(ServerRequest::class);
-        } catch (\Throwable $exception) {
-            throw new InvalidDependencyException(
-                'Could not load dependency from container',
-                0,
-                $exception
-            );
-        }
-
+        /** @var ServerRequest */
+        $request = $this->getDependency(ServerRequest::class);
         $this->app->run($request);
     }
 
@@ -194,17 +161,8 @@ final class Framework
             $_SERVER['REQUEST_METHOD'] = 'GET';
         }
 
-        try {
-            /** @var GetOpt */
-            $getopt = $this->container->get(GetOpt::class);
-        } catch (\Throwable $exception) {
-            throw new InvalidDependencyException(
-                'Could not load dependency from container',
-                0,
-                $exception
-            );
-        }
-
+        /** @var GetOpt */
+        $getopt = $this->getDependency(GetOpt::class);
         $getopt->process();
 
         // Unless a REQUEST_URI is specified, build it from command.
@@ -252,6 +210,23 @@ final class Framework
         if (!\date_default_timezone_set($timezone)) {
             throw new InvalidConfigException(
                 'The timezone "' . $timezone . '" is not valid'
+            );
+        }
+    }
+
+    /**
+     * @return mixed
+     * @throws InvalidDependencyException
+     */
+    private function getDependency(string $class)
+    {
+        try {
+            return $this->container->get($class);
+        } catch (\Throwable $exception) {
+            throw new InvalidDependencyException(
+                'Could not load dependency from container',
+                0,
+                $exception
             );
         }
     }

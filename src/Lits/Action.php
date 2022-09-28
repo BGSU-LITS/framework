@@ -30,6 +30,80 @@ abstract class Action
     /** @var list<array{level: string, message: string}> */
     protected array $messages = [];
 
+    /** @return string[] */
+    final protected function hierarchy(): array
+    {
+        $reflection = new \ReflectionClass($this);
+        $hierarchy = \explode('\\', $reflection->getNamespaceName());
+
+        \array_shift($hierarchy);
+
+        $hierarchy[] = \str_replace(
+            \implode('', \array_reverse($hierarchy)),
+            '',
+            $reflection->getShortName()
+        );
+
+        return $hierarchy;
+    }
+
+    final protected function message(string $level, string $message): void
+    {
+        $messages = $this->session->get('messages');
+
+        if (!\is_array($messages)) {
+            $messages = [];
+        }
+
+        $messages[] = [
+            'level' => $level,
+            'message' => $message,
+        ];
+
+        $this->session->set('messages', $messages);
+    }
+
+    final protected function redirect(
+        ?string $url = null,
+        ?int $status = null
+    ): void {
+        if (\is_null($url)) {
+            $url = \rtrim($this->routeCollector->getBasePath(), '/') . '/';
+        }
+
+        $this->response = $this->response->withRedirect($url, $status);
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @throws FailedResponseException
+     * @throws InvalidTemplateException
+     */
+    final protected function render(string $name, array $context = []): void
+    {
+        $context['messages'] = $this->messages;
+
+        try {
+            $this->response->getBody()->write(
+                $this->template->render($name, $context)
+            );
+        } catch (\RuntimeException $exception) {
+            throw new FailedResponseException(
+                'Could not write to the response body',
+                0,
+                $exception
+            );
+        }
+    }
+
+    final protected function template(): string
+    {
+        return \strtolower(
+            \implode(\DIRECTORY_SEPARATOR, $this->hierarchy()) .
+            '.html.twig'
+        );
+    }
+
     abstract protected function action(): void;
 
     public function __construct(ActionService $service)
@@ -108,80 +182,6 @@ abstract class Action
         }
 
         $this->session->remove('messages');
-    }
-
-    /** @return string[] */
-    final protected function hierarchy(): array
-    {
-        $reflection = new \ReflectionClass($this);
-        $hierarchy = \explode('\\', $reflection->getNamespaceName());
-
-        \array_shift($hierarchy);
-
-        $hierarchy[] = \str_replace(
-            \implode('', \array_reverse($hierarchy)),
-            '',
-            $reflection->getShortName()
-        );
-
-        return $hierarchy;
-    }
-
-    final protected function message(string $level, string $message): void
-    {
-        $messages = $this->session->get('messages');
-
-        if (!\is_array($messages)) {
-            $messages = [];
-        }
-
-        $messages[] = [
-            'level' => $level,
-            'message' => $message,
-        ];
-
-        $this->session->set('messages', $messages);
-    }
-
-    final protected function redirect(
-        ?string $url = null,
-        ?int $status = null
-    ): void {
-        if (\is_null($url)) {
-            $url = \rtrim($this->routeCollector->getBasePath(), '/') . '/';
-        }
-
-        $this->response = $this->response->withRedirect($url, $status);
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     * @throws FailedResponseException
-     * @throws InvalidTemplateException
-     */
-    final protected function render(string $name, array $context = []): void
-    {
-        $context['messages'] = $this->messages;
-
-        try {
-            $this->response->getBody()->write(
-                $this->template->render($name, $context)
-            );
-        } catch (\RuntimeException $exception) {
-            throw new FailedResponseException(
-                'Could not write to the response body',
-                0,
-                $exception
-            );
-        }
-    }
-
-    final protected function template(): string
-    {
-        return \strtolower(
-            \implode(\DIRECTORY_SEPARATOR, $this->hierarchy()) .
-            '.html.twig'
-        );
     }
 
     /** @param array<string, string> $data */

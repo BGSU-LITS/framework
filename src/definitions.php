@@ -178,6 +178,7 @@ return function (Framework $framework): void {
             assert($settings['session'] instanceof SessionConfig);
 
             $settings['session']->testKey();
+            assert($settings['session']->key !== '');
 
             return SessionConfiguration::forSymmetricSigner(
                 new SignerHmacSha256(),
