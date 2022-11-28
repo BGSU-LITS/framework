@@ -49,10 +49,10 @@ final class ActionTest extends TestCase
 
     public function testCanCheckForProxies(): void
     {
-        /** @psalm-suppress PossiblyUndefinedStringArrayOffset */
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         self::assertEquals('https', $_SERVER['REQUEST_SCHEME']);
 
-        /** @psalm-suppress PossiblyUndefinedStringArrayOffset */
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         self::assertEquals('443', $_SERVER['SERVER_PORT']);
     }
 

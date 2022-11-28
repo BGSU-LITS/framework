@@ -42,10 +42,10 @@ final class CommandTest extends TestCase
 
     public function testCanCheckForCommands(): void
     {
-        /** @psalm-suppress PossiblyUndefinedStringArrayOffset */
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         self::assertEquals('GET', $_SERVER['REQUEST_METHOD']);
 
-        /** @psalm-suppress PossiblyUndefinedStringArrayOffset */
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         self::assertEquals('/route', $_SERVER['REQUEST_URI']);
     }
 }

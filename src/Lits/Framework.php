@@ -240,7 +240,7 @@ final class Framework
         }
 
         // Look for the directory of the SCRIPT_NAME.
-        $basePath = \dirname((string) $_SERVER['SCRIPT_NAME']);
+        $basePath = \dirname($_SERVER['SCRIPT_NAME']);
 
         // Set the base path if a directory was found.
         if ($basePath !== '/') {
