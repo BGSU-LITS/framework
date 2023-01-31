@@ -184,6 +184,24 @@ abstract class Action
         $this->session->remove('messages');
     }
 
+    protected function value(string $key, bool $post = false): ?string
+    {
+        $values = $post
+            ? $this->request->getParsedBody()
+            : $this->request->getQueryParams();
+
+        if (
+            \is_array($values) &&
+            isset($values[$key]) &&
+            \is_string($values[$key]) &&
+            $values[$key] !== ''
+        ) {
+            return $values[$key];
+        }
+
+        return null;
+    }
+
     /** @param array<string, string> $data */
     public function __invoke(
         ServerRequest $request,
