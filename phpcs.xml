@@ -74,6 +74,7 @@
 
     <config name="installed_paths" value="../../slevomat/coding-standard/"/>
     <rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation"/>
+    <rule ref="SlevomatCodingStandard.Arrays.DisallowPartiallyKeyed"/>
     <rule ref="SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement"/>
     <rule ref="SlevomatCodingStandard.Arrays.SingleLineArrayWhitespace"/>
     <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
@@ -82,9 +83,10 @@
     <rule ref="SlevomatCodingStandard.Classes.ClassMemberSpacing"/>
     <rule ref="SlevomatCodingStandard.Classes.ClassStructure"/>
     <rule ref="SlevomatCodingStandard.Classes.ConstantSpacing"/>
+    <rule ref="SlevomatCodingStandard.Classes.DisallowLateStaticBindingForConstants"/>
     <rule ref="SlevomatCodingStandard.Classes.DisallowMultiConstantDefinition"/>
     <rule ref="SlevomatCodingStandard.Classes.DisallowMultiPropertyDefinition"/>
-    <rule ref="SlevomatCodingStandard.Classes.DisallowLateStaticBindingForConstants"/>
+    <rule ref="SlevomatCodingStandard.Classes.DisallowStringExpressionPropertyFetch"/>
     <rule ref="SlevomatCodingStandard.Classes.EmptyLinesAroundClassBraces">
         <properties>
             <property name="linesCountAfterOpeningBrace" value="0"/>
@@ -100,6 +102,7 @@
             <property name="minLineLength" value="80"/>
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.Classes.RequireSelfReference"/>
     <rule ref="SlevomatCodingStandard.Classes.RequireSingleLineMethodSignature">
         <properties>
             <property name="maxLineLength" value="79"/>
@@ -126,6 +129,7 @@
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowContinueWithoutIntegerOperandInSwitch"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowEmpty"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowShortTernaryOperator"/>
+    <rule ref="SlevomatCodingStandard.ControlStructures.DisallowTrailingMultiLineTernaryOperator"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.EarlyExit">
         <properties>
@@ -213,6 +217,7 @@
     <rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
     <rule ref="SlevomatCodingStandard.PHP.UselessParentheses"/>
     <rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
+    <rule ref="SlevomatCodingStandard.Strings.DisallowVariableParsing"/>
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
         <properties>
             <property name="linesCountBeforeDeclare" value="1"/>
@@ -228,6 +233,7 @@
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint"/>
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing"/>
     <rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/>
+    <rule ref="SlevomatCodingStandard.Variables.DisallowVariableVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>
