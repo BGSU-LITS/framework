@@ -18,5 +18,7 @@ final class TemplateConfig extends Config
 
     public ?string $site = null;
 
+    public ?string $analytics = null;
+
     public ?string $contact = null;
 }
