@@ -73,6 +73,7 @@
     <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
 
     <config name="installed_paths" value="../../slevomat/coding-standard/"/>
+    <rule ref="SlevomatCodingStandard.Arrays.ArrayAccess"/>
     <rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation"/>
     <rule ref="SlevomatCodingStandard.Arrays.DisallowPartiallyKeyed"/>
     <rule ref="SlevomatCodingStandard.Arrays.MultiLineArrayEndBracketPlacement"/>
@@ -96,7 +97,15 @@
     <rule ref="SlevomatCodingStandard.Classes.MethodSpacing"/>
     <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference"/>
     <rule ref="SlevomatCodingStandard.Classes.ParentCallSpacing"/>
+    <rule ref="SlevomatCodingStandard.Classes.PropertyDeclaration">
+        <properties>
+            <property name="checkPromoted" value="true"/>
+            <property name="enableMultipleSpacesBetweenModifiersCheck" value="true"/>
+        </properties>
+    </rule>
     <rule ref="SlevomatCodingStandard.Classes.PropertySpacing"/>
+    <rule ref="SlevomatCodingStandard.Classes.RequireAbstractOrFinal"/>
+    <rule ref="SlevomatCodingStandard.Classes.RequireConstructorPropertyPromotion"/>
     <rule ref="SlevomatCodingStandard.Classes.RequireMultiLineMethodSignature">
         <properties>
             <property name="minLineLength" value="80"/>
@@ -118,13 +127,17 @@
         </properties>
     </rule>
     <rule ref="SlevomatCodingStandard.Classes.UselessLateStaticBinding"/>
+    <rule ref="SlevomatCodingStandard.Commenting.AnnotationName"/>
+    <rule ref="SlevomatCodingStandard.Commenting.DeprecatedAnnotationDeclaration"/>
     <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing"/>
     <rule ref="SlevomatCodingStandard.Commenting.EmptyComment"/>
+    <rule ref="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration"/>
     <rule ref="SlevomatCodingStandard.Commenting.RequireOneLineDocComment"/>
     <rule ref="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment"/>
     <rule ref="SlevomatCodingStandard.Commenting.UselessFunctionDocComment"/>
     <rule ref="SlevomatCodingStandard.Commenting.UselessInheritDocComment"/>
     <rule ref="SlevomatCodingStandard.Complexity.Cognitive"/>
+    <rule ref="SlevomatCodingStandard.ControlStructures.AssignmentInCondition"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.BlockControlStructureSpacing"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowContinueWithoutIntegerOperandInSwitch"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.DisallowEmpty"/>
@@ -149,13 +162,16 @@
             <property name="lineLengthLimit" value="79"/>
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceEqualOperator"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceOperator"/>
+    <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullSafeObjectOperator"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.RequireShortTernaryOperator"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.RequireTernaryOperator"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.UselessIfConditionWithReturn"/>
     <rule ref="SlevomatCodingStandard.ControlStructures.UselessTernaryOperator"/>
     <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
     <rule ref="SlevomatCodingStandard.Exceptions.ReferenceThrowableOnly"/>
+    <rule ref="SlevomatCodingStandard.Exceptions.RequireNonCapturingCatch"/>
     <rule ref="SlevomatCodingStandard.Files.FileLength"/>
     <rule ref="SlevomatCodingStandard.Files.LineLength">
         <properties>
@@ -167,7 +183,10 @@
             <property name="allowMultiLine" value="true"/>
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.Functions.NamedArgumentSpacing"/>
     <rule ref="SlevomatCodingStandard.Functions.RequireArrowFunction"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInCall"/>
+    <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInClosureUse"/>
     <rule ref="SlevomatCodingStandard.Functions.RequireTrailingCommaInDeclaration"/>
     <rule ref="SlevomatCodingStandard.Functions.StrictCall"/>
     <rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
@@ -212,6 +231,7 @@
     <rule ref="SlevomatCodingStandard.PHP.DisallowDirectMagicInvokeCall"/>
     <rule ref="SlevomatCodingStandard.PHP.OptimizedFunctionsWithoutUnpacking"/>
     <rule ref="SlevomatCodingStandard.PHP.ReferenceSpacing"/>
+    <rule ref="SlevomatCodingStandard.PHP.RequireExplicitAssertion"/>
     <rule ref="SlevomatCodingStandard.PHP.RequireNowdoc"/>
     <rule ref="SlevomatCodingStandard.PHP.ShortList"/>
     <rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
@@ -224,6 +244,7 @@
             <property name="spacesCountAroundEqualsSign" value="false"/>
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.TypeHints.DisallowArrayTypeHintSyntax"/>
     <rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
     <rule ref="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition"/>
     <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
@@ -232,6 +253,7 @@
     <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint"/>
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.UnionTypeHintFormat"/>
     <rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/>
     <rule ref="SlevomatCodingStandard.Variables.DisallowVariableVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>

@@ -10,7 +10,7 @@ final class PlainTextErrorRenderer extends ErrorRenderer
 {
     public function __invoke(
         \Throwable $exception,
-        bool $displayErrorDetails
+        bool $displayErrorDetails,
     ): string {
         return $this->getErrorTitle($exception) . \PHP_EOL;
     }

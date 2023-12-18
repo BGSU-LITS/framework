@@ -21,7 +21,7 @@ final class SessionConfig extends Config
     {
         if ($this->key === '') {
             throw new InvalidConfigException(
-                'The session key must be specified'
+                'The session key must be specified',
             );
         }
 
@@ -31,13 +31,13 @@ final class SessionConfig extends Config
             throw new InvalidConfigException(
                 'The session key must be base64 encoded',
                 0,
-                $exception
+                $exception,
             );
         }
 
         if (\base64_encode($decoded) !== $this->key) {
             throw new InvalidConfigException(
-                'The session key must be base64 encoded'
+                'The session key must be base64 encoded',
             );
         }
 

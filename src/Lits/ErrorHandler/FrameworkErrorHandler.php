@@ -15,14 +15,14 @@ final class FrameworkErrorHandler extends ErrorHandler
     public function __construct(
         CallableResolver $callableResolver,
         ResponseFactory $responseFactory,
-        Logger $logger
+        Logger $logger,
     ) {
         parent::__construct($callableResolver, $responseFactory, $logger);
 
         /** @psalm-suppress UnusedClosureParam */
         $this->logErrorRenderer = fn (
             \Throwable $exception,
-            bool $displayErrorDetails
+            bool $displayErrorDetails,
         ): string => (string) $exception;
     }
 

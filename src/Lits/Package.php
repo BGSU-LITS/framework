@@ -27,11 +27,13 @@ abstract class Package
             return;
         }
 
-        /** @var callable|null */
         $result = require $file;
 
-        if (\is_callable($result)) {
-            $result(...$args);
+        if (\is_null($result)) {
+            return;
         }
+
+        \assert(\is_callable($result));
+        $result(...$args);
     }
 }

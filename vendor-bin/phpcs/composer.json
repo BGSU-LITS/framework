@@ -1,7 +1,7 @@
 {
     "require-dev": {
-        "slevomat/coding-standard": "^8.0",
-        "squizlabs/php_codesniffer": "^3.5"
+        "phpcsstandards/php_codesniffer": "^3.8",
+        "slevomat/coding-standard": "^8.14"
     },
     "config": {
         "allow-plugins": {

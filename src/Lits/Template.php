@@ -14,19 +14,15 @@ use Twig\TwigFunction;
 
 final class Template
 {
-    private Environment $environment;
-    private ServerRequest $request;
     private RouteParser $routeParser;
 
     public function __construct(
-        Environment $environment,
-        ServerRequest $request,
+        private Environment $environment,
+        private ServerRequest $request,
         RouteCollector $routeCollector,
-        Settings $settings
+        Settings $settings,
     ) {
-        $this->environment = $environment;
         $this->routeParser = $routeCollector->getRouteParser();
-        $this->request = $request;
 
         $this->global('settings', $settings);
 
@@ -37,12 +33,12 @@ final class Template
 
         $this->function(
             'relative_url_for',
-            [$this->routeParser, 'relativeUrlFor']
+            [$this->routeParser, 'relativeUrlFor'],
         );
 
         $this->function(
             'relative_path_for',
-            [$this->routeParser, 'relativeUrlFor']
+            [$this->routeParser, 'relativeUrlFor'],
         );
 
         $this->function('current_url', [$this, 'currentUrl']);
@@ -56,8 +52,7 @@ final class Template
         $this->environment->addFunction(new TwigFunction($name, $callable));
     }
 
-    /** @param mixed $value */
-    public function global(string $name, $value): void
+    public function global(string $name, mixed $value): void
     {
         $this->environment->addGlobal($name, $value);
     }
@@ -74,7 +69,7 @@ final class Template
             throw new InvalidTemplateException(
                 'The requested template could not be rendered',
                 0,
-                $exception
+                $exception,
             );
         }
     }
@@ -98,7 +93,7 @@ final class Template
             throw new FailedRoutingException(
                 'The URL could not be obtained',
                 0,
-                $exception
+                $exception,
             );
         }
     }
@@ -111,20 +106,20 @@ final class Template
     public function fullUrlFor(
         string $routeName,
         array $data = [],
-        array $queryParams = []
+        array $queryParams = [],
     ): string {
         try {
             return $this->routeParser->fullUrlFor(
                 $this->request->getUri(),
                 $routeName,
                 $data,
-                $queryParams
+                $queryParams,
             );
         } catch (\Throwable $exception) {
             throw new FailedRoutingException(
                 'The URL could not be obtained',
                 0,
-                $exception
+                $exception,
             );
         }
     }
@@ -143,7 +138,7 @@ final class Template
             throw new FailedRoutingException(
                 'The URL could not be obtained',
                 0,
-                $exception
+                $exception,
             );
         }
     }

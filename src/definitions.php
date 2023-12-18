@@ -6,7 +6,7 @@ use Dflydev\FigCookies\Modifier\SameSite;
 use Dflydev\FigCookies\SetCookie;
 use GetOpt\GetOpt;
 use Lcobucci\Clock\SystemClock;
-use Lcobucci\JWT\Configuration as SessionConfiguration;
+use Lcobucci\JWT\Configuration as JwtConfiguration;
 use Lcobucci\JWT\Signer\Hmac\Sha256 as SignerHmacSha256;
 use Lcobucci\JWT\Signer\Key\InMemory as SignerKeyInMemory;
 use Lits\Config\FrameworkConfig;
@@ -22,7 +22,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as MonologLogger;
 use Monolog\Processor\PsrLogMessageProcessor;
-use PSR7Sessions\Storageless\Http\SessionMiddleware;
+use PSR7Sessions\Storageless\Http\Configuration as SessionConfiguration;
 use PSR7Sessions\Storageless\Session\DefaultSessionData;
 use PSR7Sessions\Storageless\Session\SessionInterface as Session;
 use Psr\Container\ContainerInterface as Container;
@@ -43,21 +43,26 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface as Dispatcher;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
+use function DI\autowire;
+use function DI\create;
+use function DI\factory;
+use function DI\get;
+
 return function (Framework $framework): void {
     $framework->addDefinition(
         App::class,
-        DI\factory([AppFactory::class, 'createFromContainer']),
+        factory([AppFactory::class, 'createFromContainer']),
     );
 
     $framework->addDefinition(
         CallableResolver::class,
-        DI\autowire(SlimCallableResolver::class)
-            ->constructorParameter('container', DI\get(Container::class)),
+        autowire(SlimCallableResolver::class)
+            ->constructorParameter('container', get(Container::class)),
     );
 
     $framework->addDefinition(
         Dispatcher::class,
-        DI\create(SymfonyDispatcher::class)
+        create(SymfonyDispatcher::class),
     );
 
     $framework->addDefinition(
@@ -77,44 +82,59 @@ return function (Framework $framework): void {
                 [
                     'cache' => $settings['template']->cache ?? false,
                     'debug' => $settings['framework']->debug ?? false,
-                ]
+                ],
             );
-        }
+        },
     );
 
     $framework->addDefinition(
         ErrorMiddleware::class,
-        DI\autowire()
+        autowire()
             ->constructorParameter('displayErrorDetails', false)
             ->constructorParameter('logErrors', true)
             ->constructorParameter('logErrorDetails', true)
             ->method(
                 'setDefaultErrorHandler',
-                DI\get(FrameworkErrorHandler::class),
+                get(FrameworkErrorHandler::class),
             ),
     );
 
     $framework->addDefinition(
         FrameworkErrorHandler::class,
-        DI\autowire()
+        autowire()
             ->method(
                 'registerErrorRenderer',
                 'text/html',
-                HtmlErrorRenderer::class
+                HtmlErrorRenderer::class,
             )
             ->method(
                 'registerErrorRenderer',
                 'text/plain',
-                PlainTextErrorRenderer::class
-            )
+                PlainTextErrorRenderer::class,
+            ),
     );
 
     $framework->addDefinition(
         GetOpt::class,
-        DI\autowire()->constructorParameter(
+        autowire()->constructorParameter(
             'settings',
-            [GetOpt::SETTING_STRICT_OPTIONS => false]
-        )
+            [GetOpt::SETTING_STRICT_OPTIONS => false],
+        ),
+    );
+
+    $framework->addDefinition(
+        JwtConfiguration::class,
+        function (Settings $settings): JwtConfiguration {
+            assert($settings['session'] instanceof SessionConfig);
+
+            $settings['session']->testKey();
+            assert($settings['session']->key !== '');
+
+            return JwtConfiguration::forSymmetricSigner(
+                new SignerHmacSha256(),
+                SignerKeyInMemory::plainText($settings['session']->key),
+            );
+        },
     );
 
     $framework->addDefinition(
@@ -158,7 +178,7 @@ return function (Framework $framework): void {
 
     $framework->addDefinition(
         RouteCollector::class,
-        DI\get(SlimRoutingRouteCollector::class)
+        get(SlimRoutingRouteCollector::class),
     );
 
     $framework->addDefinition(
@@ -174,42 +194,28 @@ return function (Framework $framework): void {
 
     $framework->addDefinition(
         SessionConfiguration::class,
-        function (Settings $settings): SessionConfiguration {
-            assert($settings['session'] instanceof SessionConfig);
-
-            $settings['session']->testKey();
-            assert($settings['session']->key !== '');
-
-            return SessionConfiguration::forSymmetricSigner(
-                new SignerHmacSha256(),
-                SignerKeyInMemory::plainText($settings['session']->key)
-            );
-        }
-    );
-
-    $framework->addDefinition(
-        SessionMiddleware::class,
         function (
             Settings $settings,
-            SessionConfiguration $configuration
-        ): SessionMiddleware {
+            JwtConfiguration $configuration,
+        ): SessionConfiguration {
             assert($settings['session'] instanceof SessionConfig);
+            assert($settings['session']->expires > 0);
 
-            return new SessionMiddleware(
-                $configuration,
-                SetCookie::create('__Host-lits-session')
-                    ->withSecure(true)
-                    ->withHttpOnly(true)
-                    ->withSameSite(SameSite::lax())
-                    ->withPath('/'),
-                $settings['session']->expires,
-                SystemClock::fromSystemTimezone()
-            );
+            return (new SessionConfiguration($configuration))
+                ->withClock(SystemClock::fromSystemTimezone())
+                ->withCookie(
+                    SetCookie::create('__Host-lits-session')
+                        ->withSecure(true)
+                        ->withHttpOnly(true)
+                        ->withSameSite(SameSite::lax())
+                        ->withPath('/'),
+                )
+                ->withIdleTimeout($settings['session']->expires);
         },
     );
 
     $framework->addDefinition(
         Whoops::class,
-        DI\autowire()->method('catchErrors', false)
+        autowire()->method('catchErrors', false),
     );
 };

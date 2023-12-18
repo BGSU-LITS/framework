@@ -30,7 +30,7 @@ abstract class Action
     /** @var list<array{level: string, message: string}> */
     protected array $messages = [];
 
-    /** @return string[] */
+    /** @return list<string> */
     final protected function hierarchy(): array
     {
         $reflection = new \ReflectionClass($this);
@@ -41,7 +41,7 @@ abstract class Action
         $hierarchy[] = \str_replace(
             \implode('', \array_reverse($hierarchy)),
             '',
-            $reflection->getShortName()
+            $reflection->getShortName(),
         );
 
         return $hierarchy;
@@ -65,7 +65,7 @@ abstract class Action
 
     final protected function redirect(
         ?string $url = null,
-        ?int $status = null
+        ?int $status = null,
     ): void {
         if (\is_null($url)) {
             $url = \rtrim($this->routeCollector->getBasePath(), '/') . '/';
@@ -85,13 +85,13 @@ abstract class Action
 
         try {
             $this->response->getBody()->write(
-                $this->template->render($name, $context)
+                $this->template->render($name, $context),
             );
         } catch (\RuntimeException $exception) {
             throw new FailedResponseException(
                 'Could not write to the response body',
                 0,
-                $exception
+                $exception,
             );
         }
     }
@@ -100,7 +100,7 @@ abstract class Action
     {
         return \strtolower(
             \implode(\DIRECTORY_SEPARATOR, $this->hierarchy()) .
-            '.html.twig'
+            '.html.twig',
         );
     }
 
@@ -123,13 +123,13 @@ abstract class Action
         try {
             $this->response = $this->response->withHeader(
                 'Access-Control-Allow-Origin',
-                $origin
+                $origin,
             );
         } catch (\Throwable $exception) {
             throw new FailedResponseException(
                 'Could not add header to response',
                 0,
-                $exception
+                $exception,
             );
         }
     }
@@ -140,13 +140,13 @@ abstract class Action
         try {
             $this->response = $this->response->withHeader(
                 'Content-Type',
-                'application/json'
+                'application/json',
             );
         } catch (\Throwable $exception) {
             throw new FailedResponseException(
                 'Could not add header to response',
                 0,
-                $exception
+                $exception,
             );
         }
     }
@@ -155,21 +155,21 @@ abstract class Action
     protected function setup(
         ServerRequest $request,
         Response $response,
-        array $data
+        array $data,
     ): void {
         $this->request = $request;
         $this->response = $response;
         $this->data = $data;
 
-        /** @var Session|null */
         $session = $request->getAttribute(
-            SessionMiddleware::SESSION_ATTRIBUTE
+            SessionMiddleware::SESSION_ATTRIBUTE,
         );
 
         if (\is_null($session)) {
             return;
         }
 
+        \assert($session instanceof Session);
         $this->session = $session;
 
         $messages = $this->session->get('messages');
@@ -206,7 +206,7 @@ abstract class Action
     public function __invoke(
         ServerRequest $request,
         Response $response,
-        array $data
+        array $data,
     ): Response {
         $this->setup($request, $response, $data);
         $this->action();

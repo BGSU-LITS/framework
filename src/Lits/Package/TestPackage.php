@@ -23,7 +23,7 @@ final class TestPackage extends Package
         $framework->app()->add(
             fn (
                 ServerRequest $req,
-                RequestHandler $reqHandler
+                RequestHandler $reqHandler,
             ) => $reqHandler->handle(
                 $req->withAttribute('middleware', 'test'),
             )
@@ -40,7 +40,7 @@ final class TestPackage extends Package
                 );
 
                 return $res;
-            }
+            },
         );
     }
 

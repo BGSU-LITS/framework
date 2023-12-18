@@ -8,6 +8,8 @@ use Lits\Framework;
 use Lits\Package\TestPackage;
 use PHPUnit\Framework\TestCase;
 
+use function Safe\ob_start;
+
 final class CommandTest extends TestCase
 {
     private Framework $framework;
@@ -33,9 +35,10 @@ final class CommandTest extends TestCase
         $this->framework = new Framework([new TestPackage()], 'cli');
     }
 
+    /** @throws \Safe\Exceptions\OutcontrolException */
     public function testCanCreateMiddlewareAndRoutes(): void
     {
-        \ob_start();
+        ob_start();
         $this->framework->app()->run();
         self::assertEquals('test', \ob_get_clean());
     }

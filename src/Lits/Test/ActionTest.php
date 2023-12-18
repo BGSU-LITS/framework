@@ -10,6 +10,8 @@ use Lits\Package\TestPackage;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface as Container;
 
+use function Safe\ob_start;
+
 final class ActionTest extends TestCase
 {
     private Framework $framework;
@@ -40,9 +42,10 @@ final class ActionTest extends TestCase
         self::assertTrue($container->get(TestPackage::class));
     }
 
+    /** @throws \Safe\Exceptions\OutcontrolException */
     public function testCanCreateMiddlewareAndRoutes(): void
     {
-        \ob_start();
+        ob_start();
         $this->framework->app()->run();
         self::assertEquals('test', \ob_get_clean());
     }

@@ -10,19 +10,15 @@ use Lits\Template;
 
 final class HtmlErrorRenderer extends ErrorRenderer
 {
-    protected Template $template;
-
-    public function __construct(Template $template)
+    public function __construct(protected Template $template)
     {
-        $this->template = $template;
-
         parent::__construct();
     }
 
     /** @throws InvalidTemplateException */
     public function __invoke(
         \Throwable $exception,
-        bool $displayErrorDetails
+        bool $displayErrorDetails,
     ): string {
         return $this->template->render('error.html.twig', [
             'title' => $this->getErrorTitle($exception),

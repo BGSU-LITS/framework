@@ -9,8 +9,11 @@ use GetOpt\GetOpt;
 use Lits\Exception\FailedCommandException;
 use Lits\Service\CommandService;
 use Psr\Log\LoggerInterface as Logger;
+use Safe\Exceptions\OutcontrolException;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
+
+use function Safe\ob_flush;
 
 abstract class Command
 {
@@ -55,8 +58,12 @@ abstract class Command
     {
         echo $data;
 
-        if (\ob_get_level() > 0) {
-            \ob_flush();
+        try {
+            if (\ob_get_level() > 0) {
+                ob_flush();
+            }
+        } catch (OutcontrolException) {
+            // @ignoreException
         }
     }
 
@@ -67,7 +74,7 @@ abstract class Command
     protected function setup(
         ServerRequest $request,
         Response $response,
-        array $data
+        array $data,
     ): void {
         $this->request = $request;
         $this->response = $response;
@@ -75,7 +82,7 @@ abstract class Command
 
         if (\PHP_SAPI !== 'cli') {
             throw new FailedCommandException(
-                'The command was not accessed via CLI'
+                'The command was not accessed via CLI',
             );
         }
     }
@@ -87,7 +94,7 @@ abstract class Command
     public function __invoke(
         ServerRequest $request,
         Response $response,
-        array $data
+        array $data,
     ): Response {
         $this->setup($request, $response, $data);
         $this->command();

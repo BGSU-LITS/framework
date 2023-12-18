@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Lits;
 
 use DI\Container;
-use DI\ContainerBuilder;
 use DI\Definition\Helper\DefinitionHelper;
 use DI\Definition\Reference;
 use GetOpt\GetOpt;
@@ -19,8 +18,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface as Dispatcher;
 
 final class Framework
 {
-    private string $sapi;
-
     private App $app;
     private Container $container;
     private Dispatcher $dispatcher;
@@ -34,9 +31,10 @@ final class Framework
      * @throws InvalidConfigException
      * @throws InvalidDependencyException
      */
-    public function __construct(array $packages = [], string $sapi = \PHP_SAPI)
-    {
-        $this->sapi = $sapi;
+    public function __construct(
+        array $packages = [],
+        private string $sapi = \PHP_SAPI,
+    ) {
 
         // Add the framework package by default.
         \array_unshift($packages, new FrameworkPackage());
@@ -46,22 +44,20 @@ final class Framework
             $package->definitions($this);
         }
 
-        $builder = new ContainerBuilder();
-        $builder->addDefinitions($this->definitions);
-        $this->container = $builder->build();
+        $this->container = new Container($this->definitions);
 
-        // Create the dispatcher by loading events from all packages.
-        /** @var Dispatcher $dispatcher */
         $dispatcher = $this->getDependency(Dispatcher::class);
+
+        \assert($dispatcher instanceof Dispatcher);
         $this->dispatcher = $dispatcher;
 
         foreach ($packages as $package) {
             $package->events($this);
         }
 
-        // Create the settings by loading configs from all packages.
-        /** @var Settings $settings */
         $settings = $this->getDependency(Settings::class);
+
+        \assert($settings instanceof Settings);
         $this->settings = $settings;
 
         foreach ($packages as $package) {
@@ -77,9 +73,9 @@ final class Framework
         // Check for a default timezone.
         $this->checkForTimezone();
 
-        // Create an application from the container.
-        /** @var App $app */
         $app = $this->getDependency(App::class);
+
+        \assert($app instanceof App);
         $this->app = $app;
 
         // Find the base path in case project is run from a subdirectory.
@@ -119,17 +115,17 @@ final class Framework
     /** @throws InvalidDependencyException */
     public function run(): void
     {
-        /** @var ServerRequest */
         $request = $this->getDependency(ServerRequest::class);
+
+        \assert($request instanceof ServerRequest);
         $this->app->run($request);
     }
 
-    /**
-     * @param class-string $class
-     * @param callable|DefinitionHelper|Reference $definition
-     */
-    public function addDefinition(string $class, $definition): void
-    {
+    /** @param class-string $class */
+    public function addDefinition(
+        string $class,
+        callable|DefinitionHelper|Reference $definition,
+    ): void {
         $this->definitions[$class] = $definition;
     }
 
@@ -161,15 +157,16 @@ final class Framework
             $_SERVER['REQUEST_METHOD'] = 'GET';
         }
 
-        /** @var GetOpt */
         $getopt = $this->getDependency(GetOpt::class);
+
+        \assert($getopt instanceof GetOpt);
         $getopt->process();
 
         // Unless a REQUEST_URI is specified, build it from command.
         if (!isset($_SERVER['REQUEST_URI'])) {
             $_SERVER['REQUEST_URI'] = '/' . \basename(
                 (string) $getopt->get(GetOpt::SETTING_SCRIPT_NAME),
-                '.php'
+                '.php',
             );
         }
 
@@ -179,7 +176,7 @@ final class Framework
         }
 
         $_SERVER['QUERY_STRING'] = \http_build_query(
-            $getopt->getOptions() + $getopt->getOperands()
+            $getopt->getOptions() + $getopt->getOperands(),
         );
     }
 
@@ -201,24 +198,21 @@ final class Framework
     {
         \assert($this->settings['framework'] instanceof FrameworkConfig);
 
-        if (\is_null($this->settings['framework']->timezone)) {
+        $timezone = $this->settings['framework']->timezone;
+
+        if (\is_null($timezone) || $timezone === '') {
             return;
         }
 
-        $timezone = $this->settings['framework']->timezone;
-
         if (!\date_default_timezone_set($timezone)) {
             throw new InvalidConfigException(
-                'The timezone "' . $timezone . '" is not valid'
+                'The timezone "' . $timezone . '" is not valid',
             );
         }
     }
 
-    /**
-     * @return mixed
-     * @throws InvalidDependencyException
-     */
-    private function getDependency(string $class)
+    /** @throws InvalidDependencyException */
+    private function getDependency(string $class): mixed
     {
         try {
             return $this->container->get($class);
@@ -226,7 +220,7 @@ final class Framework
             throw new InvalidDependencyException(
                 'Could not load dependency from container',
                 0,
-                $exception
+                $exception,
             );
         }
     }
