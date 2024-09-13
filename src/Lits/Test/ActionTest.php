@@ -8,7 +8,6 @@ use Lits\Config\FrameworkConfig;
 use Lits\Framework;
 use Lits\Package\TestPackage;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface as Container;
 
 use function Safe\ob_start;
 
@@ -38,7 +37,6 @@ final class ActionTest extends TestCase
     public function testCanCreateDefinitions(): void
     {
         $container = $this->framework->app()->getContainer();
-        self::assertInstanceOf(Container::class, $container);
         self::assertTrue($container->get(TestPackage::class));
     }
 

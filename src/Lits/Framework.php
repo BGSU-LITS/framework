@@ -18,7 +18,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface as Dispatcher;
 
 final class Framework
 {
+    /** @var App<Container> */
     private App $app;
+
     private Container $container;
     private Dispatcher $dispatcher;
     private Settings $settings;
@@ -73,9 +75,8 @@ final class Framework
         // Check for a default timezone.
         $this->checkForTimezone();
 
+        /** @var App<Container> $app */
         $app = $this->getDependency(App::class);
-
-        \assert($app instanceof App);
         $this->app = $app;
 
         // Find the base path in case project is run from a subdirectory.
@@ -92,6 +93,7 @@ final class Framework
         }
     }
 
+    /** @return App<Container> */
     public function app(): App
     {
         return $this->app;

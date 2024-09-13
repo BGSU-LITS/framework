@@ -26,7 +26,7 @@ final class TestPackage extends Package
                 RequestHandler $reqHandler,
             ) => $reqHandler->handle(
                 $req->withAttribute('middleware', 'test'),
-            )
+            ),
         );
     }
 

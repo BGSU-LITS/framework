@@ -189,7 +189,7 @@ return function (Framework $framework): void {
 
     $framework->addDefinition(
         Session::class,
-        fn () => DefaultSessionData::newEmptySession()
+        fn () => DefaultSessionData::newEmptySession(),
     );
 
     $framework->addDefinition(
