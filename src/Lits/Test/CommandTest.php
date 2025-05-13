@@ -8,12 +8,14 @@ use Lits\Framework;
 use Lits\Package\TestPackage;
 use PHPUnit\Framework\TestCase;
 
+use function Safe\ob_get_clean;
 use function Safe\ob_start;
 
 final class CommandTest extends TestCase
 {
     private Framework $framework;
 
+    #[\Override]
     public function setUp(): void
     {
         $unset = [
@@ -40,7 +42,7 @@ final class CommandTest extends TestCase
     {
         ob_start();
         $this->framework->app()->run();
-        self::assertEquals('test', \ob_get_clean());
+        self::assertEquals('test', ob_get_clean());
     }
 
     public function testCanCheckForCommands(): void

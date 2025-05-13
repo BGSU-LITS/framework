@@ -26,6 +26,7 @@ final class FrameworkErrorHandler extends ErrorHandler
         ): string => (string) $exception;
     }
 
+    #[\Override]
     protected function writeToErrorLog(): void
     {
         $renderer = $this->callableResolver->resolve($this->logErrorRenderer);

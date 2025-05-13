@@ -9,12 +9,14 @@ use Lits\Framework;
 use Lits\Package\TestPackage;
 use PHPUnit\Framework\TestCase;
 
+use function Safe\ob_get_clean;
 use function Safe\ob_start;
 
 final class ActionTest extends TestCase
 {
     private Framework $framework;
 
+    #[\Override]
     public function setUp(): void
     {
         $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
@@ -45,7 +47,7 @@ final class ActionTest extends TestCase
     {
         ob_start();
         $this->framework->app()->run();
-        self::assertEquals('test', \ob_get_clean());
+        self::assertEquals('test', ob_get_clean());
     }
 
     public function testCanCheckForProxies(): void

@@ -8,6 +8,7 @@ use Lits\ErrorRenderer;
 
 final class PlainTextErrorRenderer extends ErrorRenderer
 {
+    #[\Override]
     public function __invoke(
         \Throwable $exception,
         bool $displayErrorDetails,

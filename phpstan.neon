@@ -5,3 +5,4 @@ parameters:
   paths:
     - %currentWorkingDirectory%/src/
   reportUnmatchedIgnoredErrors: false
+  treatPhpDocTypesAsCertain: false

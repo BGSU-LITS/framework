@@ -1,12 +1,12 @@
 {
     "require-dev": {
         "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan": "^1.2.0",
-        "phpstan/phpstan-deprecation-rules": "^1.0.0",
-        "phpstan/phpstan-phpunit": "^1.0.0",
-        "phpstan/phpstan-strict-rules": "^1.1.0",
-        "thecodingmachine/phpstan-safe-rule": "^1.1.0",
-        "thecodingmachine/phpstan-strict-rules": "^1.0.0"
+        "phpstan/phpstan": "^2.1.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0.0",
+        "phpstan/phpstan-phpunit": "^2.0.0",
+        "phpstan/phpstan-strict-rules": "^2.0.0",
+        "thecodingmachine/phpstan-safe-rule": "^1.4.0",
+        "kcs/phpstan-strict-rules": "^2.0.0"
     },
     "config": {
         "allow-plugins": {

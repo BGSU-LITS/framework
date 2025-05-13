@@ -16,6 +16,7 @@ final class HtmlErrorRenderer extends ErrorRenderer
     }
 
     /** @throws InvalidTemplateException */
+    #[\Override]
     public function __invoke(
         \Throwable $exception,
         bool $displayErrorDetails,
